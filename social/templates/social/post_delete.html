@@ -1,0 +1,47 @@
+{% extends 'landing/base.html' %}  # Extend the base layout template for consistent styling
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Styles for the post form layout
+        display: flex;  # Use flexbox for alignment
+        flex-direction: column;  # Stack elements vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  # Styles for individual post items
+        border-bottom: 1px solid #ddd; /* Optional: border for post items */
+        padding: 10px 0; /* Spacing for each post */
+    }
+
+    input, textarea { /* Styles for input fields and textareas */
+        border-radius: 0; /* Rectangular shape for inputs */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for textarea */
+        resize: none; /* Prevent resizing of textarea */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for layout
+    <div class="row mt-5">  # Row with top margin for spacing
+        <div class="col-md-5 col-sm-6">  # Responsive column for back button
+            <a href="{% url 'post-detail' object.pk %}" class="btn btn-light">Back To Post</a>  # Link back to the post detail page using the post's primary key
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for the deletion confirmation form
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with a bottom border
+            <form method="POST">  # Form to handle post deletion
+                {% csrf_token %}  # CSRF token for security against cross-site request forgery
+                <h5>Are You Sure?</h5>  # Confirmation heading
+                <p>You are about to delete this post, this cannot be undone.</p>  # Warning message for the user
+                <div class="d-grid gap-2">  # Grid layout for button spacing
+                    <button class="btn btn-danger mt-3">Delete</button>  # Button to delete the post with danger styling
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}  # End of the content block

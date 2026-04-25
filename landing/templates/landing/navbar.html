@@ -1,0 +1,37 @@
+<div class="container">  # Bootstrap container to ensure proper alignment and responsiveness
+    <nav class="navbar navbar-expand-lg navbar-light">  # Navbar with light styling, expandable on larger screens
+        <div class="container-fluid">  # Fluid container for navbar elements
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">  # Button to toggle the navbar on smaller screens
+                <span class="navbar-toggler-icon"></span>  # Icon for the toggler button
+            </button>
+            <a class="navbar-brand"  # Brand link
+                {% if user.is_authenticated %}  # Check if user is authenticated
+                href="{% url 'post-list' %}"  # Link to the post list if authenticated
+                {% else %}  
+                href="{% url 'index' %}"  # Link to the homepage if not authenticated
+                {% endif %}
+            ><i class="fas fa-comment"></i> Social Network</a>  # Brand text with an icon
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">  # Collapsible section for navbar items
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">  # Navigation items (currently empty)
+                </ul>
+                <form class="d-flex" method="GET" action="{% url 'profile-search' %}">  # Search form for username
+                    <div class="input-group">  # Input group for search functionality
+                        <span class="input-group-text" id="basic-addon1">@</span>  # Text prefix for the input
+                        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name="query" value="{{ request.GET.query }}">  # Input field for username search
+                        <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>  # Search button with an icon
+                    </div>
+                </form>
+                {% if user.is_authenticated %}  # Dropdown for authenticated users
+                <div class="nav-item dropdown">  # Dropdown container
+                    <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-user"></i></a>  # User icon to trigger dropdown
+                    <ul class="dropdown-menu">  # Dropdown menu items
+                        <li><a class="dropdown-item" href="{% url 'profile' user.profile.pk %}">Profile</a></li>  # Link to user profile
+                        <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>  # Link to log out
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+  </div>
+  

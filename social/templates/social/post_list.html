@@ -1,0 +1,89 @@
+{% extends 'landing/base.html' %}  # Extend the base layout template for consistent styling
+{% load crispy_forms_tags %}  # Load crispy forms tags to enhance form rendering
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Styles for the post form layout
+        display: flex;  # Use flexbox for alignment
+        flex-direction: column;  # Stack elements vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  # Styles for individual post items
+        border-bottom: 1px solid #ddd; /* Optional: border for post items */
+        padding: 10px 0; /* Spacing for each post */
+    }
+
+    input, textarea {  # Styles for input fields and textareas
+        border-radius: 0; /* Rectangular shape for inputs */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for textarea */
+        resize: none; /* Prevent resizing of textarea */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for layout
+    <div class="row justify-content-center mt-3">  # Centered row for the heading
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with a bottom border
+            <h5>Add a Post!</h5>  # Heading for the post creation form
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for the form
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column for the form
+            <form method="POST">  # Form to submit a new post
+                {% csrf_token %}  # CSRF token for security
+                {{ form | crispy }}  # Render the form using crispy forms for better styling
+                <div class="d-grid gap-2">  # Grid layout for button spacing
+                    <button class="btn btn-success mt-3">Submit!</button>  # Submit button for the form
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% for post in post_list %}  # Loop through the list of posts
+    <div class="row justify-content-center mt-3">  # Centered row for each post
+        <div class="col-md-5 col-sm-12 border-bottom position-relative">  # Responsive column with a bottom border
+            <div>
+                <a href="{% if post.author.profile.pk %}{% url 'profile' post.author.profile.pk %}{% endif %}">  # Link to author profile if it exists
+                    {% if post.author.profile.picture %}  # Check if the author has a profile picture
+                        <img class="round-circle post-img" height="30" width="30" 
+                             src="{{ post.author.profile.picture.url }}" />  # Display the author's picture
+                    {% else %}  # Fallback to default image if no picture
+                        <img class="round-circle post-img" height="30" width="30" 
+                             src="/media/uploads/profile_pictures/default.png" />
+                    {% endif %}
+                </a>
+                <p class="post-text">  # Post author and creation date
+                    <a class="text-primary post-link" href="{% if post.author.profile.pk %}{% url 'profile' post.author.profile.pk %}{% endif %}">@{{ post.author }}</a> {{ post.created_on }}
+                </p>
+            </div>
+            <div class="position-relative">  # Container for post body
+                <p>{{ post.body }}</p>  # Display post content
+                <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>  # Link to post detail page
+            </div>
+            <div class="d-flex flex-row">  # Flex container for like/dislike buttons
+                <form method="POST" action="{% url 'like' post.pk %}">  # Form to like the post
+                    {% csrf_token %}  # CSRF token for security
+                    <input type="hidden" name="next" value="{{ request.path }}">  # Preserve current path after submission
+                    <button class="remove-default-btn" type="submit">  # Button to submit the like action
+                        <i class="far fa-thumbs-up"> <span>{{ post.likes.all.count }}</span></i>  # Display like count
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'dislike' post.pk %}">  # Form to dislike the post
+                    {% csrf_token %}  # CSRF token for security
+                    <input type="hidden" name="next" value="{{ request.path }}">  # Preserve current path after submission
+                    <button class="remove-default-btn" type="submit">  # Button to submit the dislike action
+                        <i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>  # Display dislike count
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}  # End of post loop
+</div>
+{% endblock content %}  # End of the content block

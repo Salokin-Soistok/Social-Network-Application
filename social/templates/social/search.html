@@ -1,0 +1,25 @@
+{% extends 'landing/base.html' %}  # Extend the base layout for consistent design
+
+{% block content %}  # Start of the content block
+<div class="container">  # Bootstrap container for layout
+    <div class="row mt-5">  # Row for the back button
+        <div class="col-md-5 col-sm-6">  # Responsive column for the button
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back To Feed</a>  # Link to navigate back to the feed
+        </div>
+    </div>
+    
+    {% for profile in profile_list %}  # Loop through each profile in the profile list
+        <div class="row justify-content-center mt-3">  # Centered row for each profile
+            <div class="col-md-5 col-sm-12 border-bottom position-relative">  # Column for profile information
+                <p>
+                    <a style="text-decoration: none;" class="text-primary" href="{% url 'profile' profile.pk %}">@{{ profile.user }}</a>  # Link to the profile page
+                </p>
+                {% if profile.location %}  # Check if the profile has a location
+                    <p>{{ profile.location }}</p>  # Display the location
+                {% endif %}
+                <p>Followers: {{ profile.followers.all.count }}</p>  # Display the number of followers
+            </div>
+        </div>
+    {% endfor %}  # End of profiles loop
+</div>
+{% endblock content %}  # End of the content block

@@ -1,0 +1,53 @@
+{% extends 'landing/base.html' %}  # Extend the base layout for consistent design
+{% load crispy_forms_tags %}  # Load crispy forms tags for enhanced form rendering
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Styles for the profile update form layout
+        display: flex;  # Use flexbox for layout
+        flex-direction: column;  # Stack form fields vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  # Styles for individual items in the profile (if needed)
+        border-bottom: 1px solid #ddd; /* Optional: border for items */
+        padding: 10px 0; /* Spacing for each item */
+    }
+
+    input, textarea { /* Styles for input fields and textareas */
+        border-radius: 0; /* Rectangular shape for inputs */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for the textarea */
+        resize: none; /* Prevent resizing of the textarea */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for layout
+    <div class="row mt-5">  # Row for the back button
+        <div class="col-md-5 col-sm-6">  # Responsive column for the button
+            <a href="{% url 'profile' object.pk %}" class="btn btn-light">Back To Profile</a>  # Link to navigate back to the profile
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">  # Centered row for the heading
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with a bottom border
+            <h5>Update Your Profile</h5>  # Heading for the profile update form
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for the form
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column for the form
+            <form method="POST" enctype="multipart/form-data">  # Form for updating profile with file upload support
+                {% csrf_token %}  # CSRF token for security
+                {{ form | crispy }}  # Render the form using crispy forms for better styling
+                <div class="d-grid gap-2">  # Grid layout for button spacing
+                    <button class="btn btn-success mt-3">Submit!</button>  # Submit button for the form
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}  # End of the content block

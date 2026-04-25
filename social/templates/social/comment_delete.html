@@ -1,0 +1,47 @@
+{% extends 'landing/base.html' %}  # Extend the base layout template
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Style for the post form
+        display: flex;  # Use flexbox for layout
+        flex-direction: column;  # Stack elements vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  /* Style for individual post items */
+        border-bottom: 1px solid #ddd; /* Optional: border for post items */
+        padding: 10px 0; /* Spacing for each post */
+    }
+
+    input, textarea { /* Adjust the input and textarea styles */
+        border-radius: 0; /* Rectangular shape */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for textarea */
+        resize: none; /* Prevent resizing */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for responsive layout
+    <div class="row mt-5">  # Row with top margin
+        <div class="col-md-5 col-sm-6">  # Responsive column
+            <a href="{% url 'post-detail' object.post.pk %}" class="btn btn-light">Back To Post</a>  # Link back to the post detail page
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for form
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with bottom border
+            <form method="POST">  # Form to delete a comment
+                {% csrf_token %}  # CSRF token for security
+                <h5>Are You Sure?</h5>  # Confirmation heading
+                <p>You are about to delete this comment, this cannot be undone.</p>  # Warning message
+                <div class="d-grid gap-2">  # Grid layout for button
+                    <button class="btn btn-danger mt-3">Delete</button>  # Delete button with danger styling
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}  # End of the content block

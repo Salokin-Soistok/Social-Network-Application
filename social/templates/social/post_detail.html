@@ -1,0 +1,121 @@
+{% extends 'landing/base.html' %}  # Extend the base layout template for consistent styling
+{% load crispy_forms_tags %}  # Load crispy forms tags for rendering forms
+{% load static %}  <!-- Load static files to use in the template -->
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Styles for the post form layout
+        display: flex;  # Use flexbox for alignment
+        flex-direction: column;  # Stack elements vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  # Styles for individual post items
+        border-bottom: 1px solid #ddd; /* Optional: border for post items */
+        padding: 10px 0; /* Spacing for each post */
+    }
+
+    input, textarea {  # Styles for input fields and textareas
+        border-radius: 0; /* Rectangular shape */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for textarea */
+        resize: none; /* Prevent resizing of textarea */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for layout
+    <div class="row mt-5">  # Row with top margin for spacing
+        <div class="col-md-5 col-sm-6">  # Responsive column for back button
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back To Feed</a>  # Link back to the post feed
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">  # Centered row for post details
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with a bottom border
+            <div>
+                {% if post.author.profile %}  # Check if the post author has a profile
+                    {% if post.author.profile.picture %}  # Check if the profile has a picture
+                        <a href="{% url 'profile' post.author.profile.pk %}">
+                            <img class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}" />  # Display author's profile picture
+                        </a>
+                    {% else %}  # Default picture if no profile picture exists
+                        <img class="round-circle post-img" height="30" width="30" src="{% static 'uploads/profile_pictures/default.png' %}" />
+                    {% endif %}
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">@{{ post.author }}</a> {{ post.created_on }}  # Display author and creation date
+                    </p>
+                {% else %}
+                    <p>No profile available for this user.</p>  # Message if no profile exists
+                {% endif %}
+            </div>
+            {% if request.user == post.author %}  # Check if the logged-in user is the post author
+                <a href="{% url 'post-edit' post.pk %}" class="edit-color"><i class="far fa-edit"></i></a>  # Edit post link
+                <a href="{% url 'post-delete' post.pk %}" class="edit-color"><i class="fas fa-trash"></i></a>  # Delete post link
+            {% endif %}
+            <p>{{ post.body }}</p>  # Display the post content
+
+            <div class="d-flex flex-row">  # Flexbox for like and dislike buttons
+                <form method="POST" action="{% url 'like' post.pk %}">  # Form for liking the post
+                    {% csrf_token %}  # CSRF token for security
+                    <input type="hidden" name="next" value="{{ request.path }}">  # Hidden field to redirect after liking
+                    <button class="remove-default-btn" type="submit">
+                        <i class="far fa-thumbs-up"> <span>{{ post.likes.all.count }}</span></i>  # Like button with count
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'dislike' post.pk %}">  # Form for disliking the post
+                    {% csrf_token %}  # CSRF token for security
+                    <input type="hidden" name="next" value="{{ request.path }}">  # Hidden field to redirect after disliking
+                    <button class="remove-default-btn" type="submit">
+                        <i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>  # Dislike button with count
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for comment form
+        <div class="col-md-5 col-sm-12">  # Responsive column for comment form
+            <form method="POST">  # Form to submit a new comment
+                {% csrf_token %}  # CSRF token for security
+                {{ form | crispy }}  # Render the comment form using crispy forms
+                <div class="d-grid gap-2">  # Grid layout for button spacing
+                    <button class="btn btn-success mt-3">Submit!</button>  # Submit button for the comment
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% for comment in comments %}  # Loop through each comment associated with the post
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for each comment
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column for comment details
+            <p>
+                <div>
+                    {% if comment.author.profile %}  # Check if the comment author has a profile
+                        {% if comment.author.profile.picture %}  # Check for the profile picture
+                            <a href="{% url 'profile' comment.author.profile.pk %}">
+                                <img class="round-circle post-img" height="30" width="30" src="{{ comment.author.profile.picture.url }}" />  # Display comment author's profile picture
+                            </a>
+                        {% else %}
+                            <img class="round-circle post-img" height="30" width="30" src="{% static 'uploads/profile_pictures/default.png' %}" />  # Default picture if none exists
+                        {% endif %}
+                        <p class="post-text">
+                            <a class="text-primary post-link" href="{% url 'profile' comment.author.profile.pk %}">@{{ comment.author }}</a> {{ comment.created_on }}  # Display comment author's name and creation date
+                        </p>
+                    {% else %}
+                        <p>No profile available for this user.</p>  # Message if no profile exists
+                    {% endif %}
+                </div>
+                {% if request.user == comment.author %}  # Check if the logged-in user is the comment author
+                    <a href="{% url 'comment-delete' post.pk comment.pk %}" class="edit-color"><i class="fas fa-trash"></i></a>  # Delete comment link
+                {% endif %}
+            </p>
+            <p>{{ comment.comment }}</p>  # Display the comment content
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}  # End of the content block

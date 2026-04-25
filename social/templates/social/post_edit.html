@@ -1,0 +1,53 @@
+{% extends 'landing/base.html' %}  # Extend the base layout template for consistent styling
+{% load crispy_forms_tags %}  # Load crispy forms tags to enhance form rendering
+
+{% block content %}  # Start of the content block
+<style>
+    .post-form {  # Styles for the post form layout
+        display: flex;  # Use flexbox for alignment
+        flex-direction: column;  # Stack elements vertically
+        gap: 10px; /* Space between the fields */
+    }
+
+    .post-item {  # Styles for individual post items
+        border-bottom: 1px solid #ddd; /* Optional: border for post items */
+        padding: 10px 0; /* Spacing for each post */
+    }
+
+    input, textarea {  # Styles for input fields and textareas
+        border-radius: 0; /* Rectangular shape for inputs */
+        border: 1px solid #ccc; /* Optional: border color */
+    }
+
+    textarea {
+        height: 100px; /* Set a fixed height for textarea */
+        resize: none; /* Prevent resizing of textarea */
+    }
+</style>
+
+<div class="container">  # Bootstrap container for layout
+    <div class="row mt-5">  # Row with top margin for spacing
+        <div class="col-md-5 col-sm-6">  # Responsive column for back button
+            <a href="{% url 'post-detail' object.pk %}" class="btn btn-light">Back To Post</a>  # Link back to the specific post detail page
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">  # Centered row for the update heading
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column with a bottom border
+            <h5>Update Your Post!</h5>  # Heading for the update form
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3 mb-5">  # Centered row for the update form
+        <div class="col-md-5 col-sm-12 border-bottom">  # Responsive column for the form
+            <form method="POST">  # Form to submit the updated post
+                {% csrf_token %}  # CSRF token for security
+                {{ form | crispy }}  # Render the form using crispy forms for better styling
+                <div class="d-grid gap-2">  # Grid layout for button spacing
+                    <button class="btn btn-success mt-3">Submit!</button>  # Submit button for the form
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}  # End of the content block

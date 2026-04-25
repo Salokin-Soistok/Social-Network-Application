@@ -1,0 +1,25 @@
+{% load static %}  # Load static files (CSS, JS, images) from the Django static files directory
+<!doctype html>
+<html lang="en">  # Set the document type and language
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">  # Set character encoding to UTF-8
+    <meta name="viewport" content="width=device-width, initial-scale=1">  # Responsive design for different screen sizes
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">  # Link to Bootstrap CSS for styling
+
+    <link href="{% static 'style.css' %}" rel="stylesheet">  # Link to custom CSS file from static directory
+    
+    <script src="https://kit.fontawesome.com/1d71f92e0a.js" crossorigin="anonymous"></script>  # Include Font Awesome for icons
+    <title>Social Network</title>  # Set the page title
+  </head>
+  <body>
+    {% include 'landing/navbar.html' %}  # Include the navigation bar from another template
+    {% block content %}  # Start of a block where content can be injected
+    {% endblock content %}  # End of the content block
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  # Link to Bootstrap JS for interactivity
+  </body>
+</html>
